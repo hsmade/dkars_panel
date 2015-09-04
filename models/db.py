@@ -92,55 +92,33 @@ auth.settings.reset_password_requires_verification = True
 # auth.enable_record_versioning(db)
 
 db.define_table('t_mailinglist',
-    Field('f_email', 'string', label=T('e-Mail address'), requires=IS_EMAIL()),
+                Field('f_email', 'string', label=T('e-Mail address'), requires=IS_EMAIL()),
 )
 
-db.define_table('t_locations',
-    Field('f_location', 'string', label=T('Location')),
-    Field('f_in_NL', 'boolean', label=T('Is in NL')),
-)
+db.define_table('t_questionnaire',
+                Field('f_title', 'string', label=T('Title'), required=True),
+                Field('f_description', 'text', label=T('Description'), required=True),
+                Field('f_start', 'date', label=T('Start date'), required=True),
+                Field('f_end', 'date', label=T('End date'), required=True),
+                )
 
-db.define_table('t_home_types',
-    Field('f_home_type', 'string', label=T('Home type'))
-)
+# db.define_table('t_answers',
+#                 Field('f_answer', 'text', ),
+#                 format='%(f_answer)s')
 
-db.define_table('t_preference', 'string', label=T('Preference'))
-db.define_table('t_members',
-    Field('f_location', 'string', label=T('Location (province, EU or not EU'), 
-          requires=IS_IN_DB(db, db.t_locations.id, '%(f_location)s', zero=None)),
-    Field('f_dkars_member', 'boolean', label=T('DKARS member')),
-    Field('f_sex', 'string', label=T('Sex'), requires=IS_IN_SET(('male','female'))),
-    Field('f_age_group', 'string', label=T('Age group'), requires=IS_IN_SET((
-        '< 16',
-        '16-25',
-        '26-50',
-        '51-65',
-        '> 65'
-    ))),
-    Field('f_type_of_home', 'string', label=T('Type of home'),
-          requires=IS_IN_DB(db, db.t_home_types.id, '%(f_home_type)s', zero=None)),
-    Field('f_registration_type', 'string', label=T('Registration type'), requires=IS_IN_SET((
-        'F',
-        'N',
-        'None',
-    ))),
-    Field('f_hours_active', 'string', label=T('Hours active'), requires=IS_IN_SET((
-        '0',
-        '< 1',
-        '1-8',
-        '> 8'
-    ))),
-    # vereniging
-    Field('f_club_member', 'string', label=T('Member of club'), requires=IS_IN_set((
-        'Yes, of one dutch club',
-        'Yes, of two or more dutch clubs',
-        'Yes, of a dutch club and DKARS donator',
-        'No, but DKARS donator',
-        'No, none',
-    ))),
-)
+db.define_table('t_question',
+                Field('f_questionnaire', 'reference t_questionnaire', label=T('Questionnaire'), required=True),
+                Field('f_question', 'text', label=T('Question'), required=True),
+                # Field('f_open', 'boolean', label=T('Allow open answer?'), required=True),
+                # Field('f_answers', 'list:reference t_answers', label=T('List of answers'), required=False),
+                Field('f_answers', 'list:string', label=T('List of answers'), required=False),
+                Field('f_multiple', 'boolean', label=T('Allow multiple answers'))
+                )
 
-db.define_table('f_member_preferences',
-    Field('f_member_id', 'integer'),
-    Field('f_preference_id', 'integer'),
-)
+db.define_table('t_answer',
+                Field('f_question', 'reference t_question', label=T('Question'), required=True),
+                Field('f_answer', 'text', label=T('Answer'), required=True),
+                Field('f_member', 'reference auth_user', label=T('Member'), required=True),
+                )
+
+auth.settings.register_onaccept.append(lambda form: redirect(URL('questionnaires', args=(1,))))
