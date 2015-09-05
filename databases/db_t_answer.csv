@@ -1,0 +1,73 @@
+t_answer.id,t_answer.f_question,t_answer.f_answer
+17,14,"Ik ben het hier mee eens, voor mijn status heb ik best wel iets over"
+18,14,"Ik ben het hier niet mee eens, het moet gewoon gratis blijven"
+19,14,Ik heb hier geen mening over
+20,3,Yes
+21,3,No
+22,4,Male
+23,4,Female
+24,5,<16
+25,5,16-25
+26,5,26-50
+27,5,51-65
+28,5,>65
+29,6,Groningen
+30,6,Friesland
+31,6,Drenthe
+32,6,Overijssel
+33,6,Flevoland
+34,6,Gelderland
+35,6,Utrecht
+36,6,Noord-Holland
+37,6,Zuid-Holland
+38,6,Zeeland
+39,6,Bonaire/Saba/Sint Eustatius
+40,6,Europe
+41,6,Africa
+42,6,Middle-East
+43,6,"North, Middle, or South America"
+44,6,Caribian
+45,6,Asia
+46,6,Australia / New Zealand
+47,6,Oceania
+48,8,City
+49,8,Village
+50,8,Countryside
+51,8,Flat / Appartement
+52,8,Terraced house
+53,8,Detached house
+54,8,Chalet
+55,8,Boat
+56,8,Caravan
+57,8,Rental
+58,8,Owned
+59,8,Resident
+60,10,Full
+61,10,Novice
+62,10,None
+63,11,Not active
+64,11,<1
+65,11,1-8
+66,11,>8
+67,12,HF
+68,12,VHF
+69,12,UHF
+70,12,SHF
+71,12,CW
+72,12,SSB
+73,12,Digital
+74,12,DX
+75,12,Contest
+76,12,Just chatting
+77,12,Mobile
+78,12,Portable
+79,12,DIY
+80,13,"Yes, one dutch association"
+81,13,"Yes, more than one dutch association"
+82,13,"Yes, member of an association and also donator of DKARS"
+83,13,"No, but donator of DKARS"
+84,13,Non dutch association
+85,13,None
+86,15,"Maximaal € 25,00 per jaar"
+87,15,"Maximaal € 50,00 per jaar"
+88,15,"Maximaal € 100,00 per jaar"
