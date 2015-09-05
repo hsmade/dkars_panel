@@ -102,23 +102,23 @@ db.define_table('t_questionnaire',
                 Field('f_end', 'date', label=T('End date'), required=True),
                 )
 
-# db.define_table('t_answers',
-#                 Field('f_answer', 'text', ),
-#                 format='%(f_answer)s')
-
 db.define_table('t_question',
                 Field('f_questionnaire', 'reference t_questionnaire', label=T('Questionnaire'), required=True),
                 Field('f_question', 'text', label=T('Question'), required=True),
-                # Field('f_open', 'boolean', label=T('Allow open answer?'), required=True),
-                # Field('f_answers', 'list:reference t_answers', label=T('List of answers'), required=False),
-                Field('f_answers', 'list:string', label=T('List of answers'), required=False),
-                Field('f_multiple', 'boolean', label=T('Allow multiple answers'))
+                # Field('f_answers', 'list:string', label=T('List of answers'), required=False),
+                Field('f_multiple', 'boolean', label=T('Allow multiple answers')),
                 )
 
 db.define_table('t_answer',
                 Field('f_question', 'reference t_question', label=T('Question'), required=True),
                 Field('f_answer', 'text', label=T('Answer'), required=True),
+                format='%(f_answer)s'
+                )
+
+db.define_table('t_member_answer',
                 Field('f_member', 'reference auth_user', label=T('Member'), required=True),
+                Field('f_question', 'reference t_question', label=T('Question'), required=True),
+                Field('f_answer', 'list:reference t_answer', label=T('Answers'), required=False),
                 )
 
 auth.settings.register_onaccept.append(lambda form: redirect(URL('questionnaires', args=(1,))))
