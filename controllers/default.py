@@ -163,19 +163,20 @@ def questionnaires():
     )
 
     if answer_form.accepts(request, session):
-        answer = answer_form.vars['Answer']
+        answer = answer_form.vars['Antwoord']
         if not isinstance(answer, list):
             answer = [answer,]
+        logger.debug('questionnaire.submit got answer: {}'.format(answer))
         answers = db(db.t_answer.f_answer.belongs(answer)).select()
         if not given_answer_record:
-            logger.debug('questionnaire.submit: insert record')
+            logger.debug('questionnaire.submit: insert record with answer:{}'.format([row.id for row in answers]))
             db.t_member_answer.insert(
                 f_question=question,
                 f_answer=[row.id for row in answers],
                 f_member=auth.user_id
             )
         else:
-            logger.debug('questionnaire.submit: update record')
+            logger.debug('questionnaire.submit: update record with answer:{}'.format([row.id for row in answers]))
             given_answer_record.update_record(f_answer=[row.id for row in answers])
         redirect(URL('questionnaires', args=(request.args[0], question_index + 1)))
     return dict(title=questionnaire.f_title,
@@ -239,7 +240,9 @@ def results():
     answers = db(db.t_answer.f_question == question).select()
 
     for answer in answers:
+        logger.debug('results: getting member ids for question:{} and answer:{}'.format(question.id, answer.id))
         member_ids = [row.f_member for row in db(db.t_member_answer.f_question == question).select() if answer.id in row.f_answer]
+        logger.debug('results: getting member ids result: {}'.format(member_ids))
 
         # get demographics
         # TODO: make the questionnaire selectable instead of hard coded '1'
@@ -249,7 +252,7 @@ def results():
             dg_answers = db(db.t_answer.f_question == dg_question).select()
             dg_answers_list = []
             for dg_answer in dg_answers:
-                amount = len([row.f_member for row in db(db.t_member_answer.f_question == dg_question).select() if dg_answer.id in row.f_answer])
+                amount = len([row.f_member for row in db(db.t_member_answer.f_question == dg_question).select() if dg_answer.id in row.f_answer and row.f_member in member_ids])
                 dg_answers_list.append({
                     'answer': dg_answer.f_answer,
                     'amount': amount
