@@ -1,8 +1,8 @@
 {{extend 'layout.html'}}
 <h1>DKARS panel</h1>
-<p>{{=T('Welcome, blabla')}}</p>
+<p>Welkom, blabla</p>
 <ul>
     {{ for link in links: }}
-    <li><a href="{{=link['link']}}">{{=T(link['name'])}}</a></li>
+    <li><a href="{{=link['link']}}">{{=link['name']}}</a></li>
     {{ pass }}
 </ul>

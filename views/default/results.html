@@ -1,23 +1,23 @@
 {{extend 'layout.html'}}
-<h1>{{=T('DKARS questionnaire results')}}</h1>
+<h1>DKARS questionnaire resultaten</h1>
 <p>
-    <b>{{=T('Selected questionnaire:')}}</b> {{=title}}<br>
+    <b>Geselecteerde questionnaire:</b> {{=title}}<br>
     <a href="{{=URL('results', args=(questionnaire_left))}}">&lt;</a>
-    <b>{{=T('navigate')}}</b>
+    <b>navigatie</b>
     <a href="{{=URL('results', args=(questionnaire_right))}}">&gt;</a>
 </p>
 
-<p><b>{{=T('Introduction:')}}</b> {{=introduction}}</p>
+<p><b>Introductie:</b> {{=introduction}}</p>
 <p>
-    <b>{{=T('Selected question:')}}</b> {{=question}}<br>
+    <b>Geselecteerde vraag:</b> {{=question}}<br>
     <a href="{{=URL('results', args=(request.args[0], question_left))}}">&lt;</a>
-    <b>{{=T('navigate')}}</b>
+    <b>navigatie</b>
     <a href="{{=URL('results', args=(request.args[0], question_right))}}">&gt;</a>
 </p>
 <ul>
 {{ for answer in answers:}}
     <li>{{=answer['answer']}}<br>
-        <b>Amount: </b>{{=answer['amount']}}<br>
+        <b>Aantal: </b>{{=answer['amount']}}<br>
         <button id="dg_button_{{=answer['id']}}">Demographics</button>
         <div style="display: none;" id="dg_div_{{=answer['id']}}">
             <ul>

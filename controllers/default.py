@@ -10,6 +10,7 @@ from datetime import datetime
 ## - download is for downloading files uploaded in the db (does streaming)
 #########################################################################
 
+# TODO apply website template
 
 def index():
     """
@@ -20,18 +21,18 @@ def index():
     """
     links = [
         {
-            'name': T('Subscribe to the mailing list'),
+            'name': 'Aanmelden voor de mailinglijst voor nieuwe onderzoeken',
             'link': URL('mailinglist')
         }
     ]
     if not auth.is_logged_in():
         links.extend([
             {
-                'name': T('Sign-in'),
+                'name': T('Inloggen'),
                 'link': URL('user/login')
             },
             {
-                'name': T('Sign-up'),
+                'name': T('Aanmelden als nieuwe gebruiker'),
                 'link': URL('user/register')
             }
         ])
@@ -44,11 +45,11 @@ def index():
     if auth.has_membership('admin'):
         links.extend([
             {
-                'name': T('Administrate'),
+                'name': T('Administratie'),
                 'link': URL('administrate')
             },
             {
-                'name': T('Results'),
+                'name': T('Resultaten'),
                 'link': URL('results')
             }
         ])
@@ -80,14 +81,14 @@ def mailinglist():
     When logged in, allows for maintenance and download on the mailing list.
     """
     if auth.has_membership('admin'):
-        title = T('Mailing list maintenance')
+        title = 'Mailinglijst administratie'
         form = SQLFORM.smartgrid(db.t_mailinglist)
     else:
-        title = T('Subscribe to our panel mailing list')
-        form = FORM(T('Your e-mail address:'), INPUT(_name='email', requires=IS_EMAIL()), INPUT(_type='submit'))
+        title = 'Aanmelden voor de mailinglijst voor nieuwe onderzoeken'
+        form = FORM('e-mailaddress:', INPUT(_name='email', requires=IS_EMAIL()), INPUT(_type='submit'))
         if form.accepts(request, session):
             db.t_mailinglist.insert(f_email=form.vars['email'])
-            response.flash = T('You have been added')
+            response.flash = T('Je bent toegevoegd')
     return dict(form=form, title=title)
 
 
@@ -113,7 +114,7 @@ def questionnaires():
         raise HTTP(404)
     questionnaire = questionnaire[0]
     if questionnaire.f_start < datetime.now().date() > questionnaire.f_end:
-        raise HTTP(404, T('This questionnaire has ended'))
+        raise HTTP(404, 'Dit onderzoek is be&iuml;ndigd')
     if len(request.args) == 1:
         question_index = 0
     else:
@@ -124,9 +125,9 @@ def questionnaires():
     except IndexError:
         return dict(
             title=questionnaire.f_title,
-            description=T('Thanks for submitting your answers'),
-            question=None,
-            answer=None,
+            description='Bedankt voor het meedoen aan dit onderzoek',
+            question='',
+            answer='',
         )
     given_answer = db((db.t_member_answer.f_member == auth.user_id) &
                       (db.t_member_answer.f_question == question)).select()
@@ -230,6 +231,7 @@ def results():
         member_ids = [row.f_member for row in db(db.t_member_answer.f_question == question).select() if answer.id in row.f_answer]
 
         # get demographics
+        # TODO: make the questionnaire selectable instead of hard coded '1'
         dg_question_list = []
         dg_questions = db(db.t_question.f_questionnaire == 1).select()
         for dg_question in dg_questions:
