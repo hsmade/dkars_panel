@@ -144,7 +144,7 @@ def questionnaires():
         given_answer_record = None
 
     answer_form = SQLFORM.factory(
-        Field('Answer', 'list:string',
+        Field('Antwoord', 'list:string',
               requires=IS_EMPTY_OR(
                   IS_IN_SET(
                       [row.f_answer for row in db(db.t_answer.f_question == question.id).select()], multiple=question.f_multiple
