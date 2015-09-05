@@ -135,15 +135,19 @@ def questionnaires():
         )
     given_answer = db((db.t_member_answer.f_member == auth.user_id) &
                       (db.t_member_answer.f_question == question)).select()
+    logger.debug('questionnaire: user_id: {}, question ID:{}'.format(auth.user_id, question.id))
     if given_answer:
         given_answer_record = given_answer[0]
+        logger.debug('questionnaire: given_answer: {}'.format(given_answer_record))
         try:
             given_answers = [row.f_answer for row in db(db.t_answer.id.belongs(given_answer_record.f_answer)).select()]
         except KeyError:
+            logger.debug('questionnaire: got key error while getting given answers')
             given_answers = []
         if len(given_answers) == 1:
             given_answers = given_answers[0]
     else:
+        logger.debug('questionnaire: no given answer found')
         given_answers = []
         given_answer_record = None
     logger.debug('questionnaire: given_answers: {}'.format(given_answers))
