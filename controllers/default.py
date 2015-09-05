@@ -10,16 +10,50 @@ from datetime import datetime
 ## - download is for downloading files uploaded in the db (does streaming)
 #########################################################################
 
+
 def index():
     """
-    example action using the internationalization operator T and flash
-    rendered by views/default/index.html or views/generic.html
-
-    if you need a simple wiki simply replace the two lines below with:
-    return auth.wiki()
+    This is the landing page.
+    When the user is not logged in, present sign-in and sign-up links.
+    When the user is logged in, give the user a list of open questionnaires.
+    When the user is an admin, present the administrate and results links
     """
-    response.flash = T("Hello World")
-    return dict(message=T('Welcome to web2py!'))
+    links = [
+        {
+            'name': T('Subscribe to the mailing list'),
+            'link': URL('mailinglist')
+        }
+    ]
+    if not auth.is_logged_in():
+        links.extend([
+            {
+                'name': T('Sign-in'),
+                'link': URL('user/login')
+            },
+            {
+                'name': T('Sign-up'),
+                'link': URL('user/register')
+            }
+        ])
+    else:
+        for questionnaire in db(db.t_questionnaire).select():
+            links.append({
+                'name': questionnaire.f_title,
+                'link': URL('questionnaires', args=(questionnaire.id))
+            })
+    if auth.has_membership('admin'):
+        links.extend([
+            {
+                'name': T('Administrate'),
+                'link': URL('administrate')
+            },
+            {
+                'name': T('Results'),
+                'link': URL('results')
+            }
+        ])
+
+    return dict(links=links)
 
 
 def user():
@@ -46,14 +80,14 @@ def mailinglist():
     When logged in, allows for maintenance and download on the mailing list.
     """
     if auth.has_membership('admin'):
-        title = 'Mailing list maintenance'
+        title = T('Mailing list maintenance')
         form = SQLFORM.smartgrid(db.t_mailinglist)
     else:
-        title = 'Subscribe to our panel mailing list'
-        form = FORM('Your e-mail address:', INPUT(_name='email', requires=IS_EMAIL()), INPUT(_type='submit'))
+        title = T('Subscribe to our panel mailing list')
+        form = FORM(T('Your e-mail address:'), INPUT(_name='email', requires=IS_EMAIL()), INPUT(_type='submit'))
         if form.accepts(request, session):
             db.t_mailinglist.insert(f_email=form.vars['email'])
-            response.flash = 'form accepted'
+            response.flash = T('You have been added')
     return dict(form=form, title=title)
 
 
@@ -62,10 +96,7 @@ def administrate():
     """
     Administrate the questionnaires
     """
-    if auth.has_membership('admin'):
-        return dict(form=SQLFORM.smartgrid(db.t_questionnaire))
-    else:
-        raise HTTP(404)
+    return dict(form=SQLFORM.smartgrid(db.t_questionnaire))
 
 
 @auth.requires_login()
@@ -81,8 +112,8 @@ def questionnaires():
     if not questionnaire:
         raise HTTP(404)
     questionnaire = questionnaire[0]
-    # if int(questionnaire.f_start.replace('-', '')) < int(datetime.now().strftime('%Y%m%d')) > int(questionnaire.f_end.replace('-', '')):
-    #     raise HTTP(404, T('This questionnaire has ended'))
+    if questionnaire.f_start < datetime.now().date() > questionnaire.f_end:
+        raise HTTP(404, T('This questionnaire has ended'))
     if len(request.args) == 1:
         question_index = 0
     else:
@@ -148,47 +179,58 @@ def results():
     Returns the results for a questionnaire
     """
     if len(request.args) < 1:
-        raise HTTP(404)
+        redirect(URL('results', args=(2,)))
     # get the questionnaire
     questionnaire = db(db.t_questionnaire.id == request.args[0]).select()
     if not questionnaire:
         raise HTTP(404)
     questionnaire = questionnaire[0]
-    title = 'Results of questionnaire number {} ({} - {})'.format(
-        questionnaire.id,
+    title = '{} ({} - {})'.format(
+        questionnaire.f_title,
         questionnaire.f_start,
         questionnaire.f_end,
     )
 
+    questionnaires = [row.id for row in db(db.t_questionnaire).select()]
+    questionnaire_index = int(request.args[0])
+    if questionnaire_index <= 1:
+        questionnaire_left = 1
+    else:
+        questionnaire_left = questionnaire_index - 1
+    if questionnaire_index >= questionnaires[-1]:
+        questionnaire_right = questionnaires[-1]
+    else:
+        questionnaire_right = questionnaires[questionnaires.index(questionnaire_index) + 1]
+
     # get the question
     if len(request.args) == 1:
-        question_index = 0
+        redirect(URL('results', args=(request.args[0], 0)))
     else:
         question_index = int(request.args[1])
+
     questions = db(db.t_question.f_questionnaire == questionnaire).select()
+    if question_index <= 0:
+        question_left = 0
+    else:
+        question_left = question_index - 1
+
+    if question_index >= len(questions) - 1:
+        question_right = question_index
+    else:
+        question_right = question_index + 1
     try:
         question = questions[question_index]
     except IndexError:
         question = questions[0]
 
-    # get the answers for that question
-    if len(request.args) == 3:
-        answer_index = int(request.args[2])
-    else:
-        answer_index = 0
-
+    answers_list = []
     answers = db(db.t_answer.f_question == question).select()
-    try:
-        answer = answers[answer_index]
-    except IndexError:
-        answer = answers[0]
-    answer_text = answer.f_answer
-    # get the members on this answer
-    member_ids = [row.f_member for row in db(db.t_member_answer.f_question == question).select() if answer.id in row.f_answer]
 
-    dg_question_list = []
-    if 'detail' in request.vars:
+    for answer in answers:
+        member_ids = [row.f_member for row in db(db.t_member_answer.f_question == question).select() if answer.id in row.f_answer]
+
         # get demographics
+        dg_question_list = []
         dg_questions = db(db.t_question.f_questionnaire == 1).select()
         for dg_question in dg_questions:
             dg_answers = db(db.t_answer.f_question == dg_question).select()
@@ -203,5 +245,18 @@ def results():
                 'question': dg_question.f_question,
                 'answers': dg_answers_list
             })
-    return dict(title=title, question=question.f_question, answer=answer_text,
-                amount=len(member_ids), demographics=dg_question_list)
+
+        answers_list.append(
+            {
+                'id': answer.id,
+                'answer': answer.f_answer,
+                'amount': len(member_ids),
+                'demographics': dg_question_list,
+            }
+        )
+
+    return dict(title=title, introduction=questionnaire.f_description,
+                question=question.f_question, answers=answers_list,
+                question_left=question_left, question_right=question_right,
+                questionnaire_left=questionnaire_left, questionnaire_right=questionnaire_right,
+                )

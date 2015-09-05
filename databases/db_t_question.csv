@@ -1,12 +1,12 @@
 t_question.id,t_question.f_questionnaire,t_question.f_question,t_question.f_multiple
-3,1,Are you a DKARS donator?,<NULL>
-4,1,What is your sex?,<NULL>
-5,1,What is your age?,<NULL>
-6,1,What Province or continent do you live in?,False
-8,1,In what type of municipality do you live?,True
-10,1,What is the type of your license?,<NULL>
-11,1,How active are you in the radio hobby in hours per week?,<NULL>
-12,1,What do you like about the hobby?,True
-13,1,Are you a member of any association?,<NULL>
-14,3,Wat vindt u hier eigenlijk van?,False
-15,3,"Indien u het hier mee eens bent, wat zou een redelijke jaarlijkse vergoeding zijn?",False
+1,1,Are you a DKARS donator?,False
+2,1,What is your sex?,False
+3,1,What is your age?,False
+4,1,What Province or continent do you live in?,False
+5,1,In what type of municipality do you live?,True
+6,1,What is the type of your license?,False
+7,1,How active are you in the radio hobby in hours per week?,False
+8,1,What do you like about the hobby?,True
+9,1,Are you a member of any association?,False
+10,2,Wat vindt u hier eigenlijk van?,False
+11,2,"Indien u het hier mee eens bent, wat zou een redelijke jaarlijkse vergoeding zijn?",False

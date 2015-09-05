@@ -1,0 +1,44 @@
+{{extend 'layout.html'}}
+<h1>{{=T('DKARS questionnaire results')}}</h1>
+<p>
+    <b>{{=T('Selected questionnaire:')}}</b> {{=title}}<br>
+    <a href="{{=URL('results', args=(questionnaire_left))}}">&lt;</a>
+    <b>{{=T('navigate')}}</b>
+    <a href="{{=URL('results', args=(questionnaire_right))}}">&gt;</a>
+</p>
+
+<p><b>{{=T('Introduction:')}}</b> {{=introduction}}</p>
+<p>
+    <b>{{=T('Selected question:')}}</b> {{=question}}<br>
+    <a href="{{=URL('results', args=(request.args[0], question_left))}}">&lt;</a>
+    <b>{{=T('navigate')}}</b>
+    <a href="{{=URL('results', args=(request.args[0], question_right))}}">&gt;</a>
+</p>
+<ul>
+{{ for answer in answers:}}
+    <li>{{=answer['answer']}}<br>
+        <b>Amount: </b>{{=answer['amount']}}<br>
+        <button id="dg_button_{{=answer['id']}}">Demographics</button>
+        <div style="display: none;" id="dg_div_{{=answer['id']}}">
+            <ul>
+            {{ for dg_question in answer['demographics']: }}
+                <li>
+                    {{=dg_question['question']}}
+                    <ul>
+                    {{ for dg_answer in dg_question['answers']: }}
+                        <li>{{=dg_answer['answer']}}: {{=dg_answer['amount']}}</li>
+                    {{ pass }}
+                    </ul>
+                </li>
+            {{ pass }}
+            </ul>
+        </div>
+        <script language="JavaScript">
+            $("#dg_button_{{=answer['id']}}").click(function() {
+            $("#dg_div_{{=answer['id']}}").toggle();
+        });
+</script>
+    </li>
+{{ pass }}
+</ul>
+

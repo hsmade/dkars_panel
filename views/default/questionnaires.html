@@ -1,9 +1,9 @@
 {{extend 'layout.html'}}
-<h1>DKARS questionnaire '{{=title}}'</h1>
-<p>{{=description}}</p>
+<h1>{{=T('DKARS panel questionnaire')}} '{{=T(title)}}'</h1>
+<p>{{=T(description)}}</p>
 <p>
-    {{=question}}
+    {{=T(question)}}
 </p>
 <p>
-    {{=answer}}
+    {{=T(answer)}}
 </p>
