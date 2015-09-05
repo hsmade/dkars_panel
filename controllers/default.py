@@ -2,6 +2,9 @@
 # this file is released under public domain and you can use without limitations
 
 from datetime import datetime
+import logging
+
+logger = logging.getLogger('panel.controller')
 
 #########################################################################
 ## This is a sample controller
@@ -106,6 +109,7 @@ def questionnaires():
     Fill a questionnaire
     # FIXME: what should this do when the user already filled this one in?
     """
+    logger.debug('questionnaire.args: {}'.format(request.args))
     if len(request.args) < 1:
         raise HTTP(404)
     # get the questionnaire
@@ -142,6 +146,7 @@ def questionnaires():
     else:
         given_answers = []
         given_answer_record = None
+    logger.debug('questionnaire: given_answers: {}'.format(given_answers))
 
     answer_form = SQLFORM.factory(
         Field('Antwoord', 'list:string',
@@ -159,12 +164,14 @@ def questionnaires():
             answer = [answer,]
         answers = db(db.t_answer.f_answer.belongs(answer)).select()
         if not given_answer_record:
+            logger.debug('questionnaire.submit: insert record')
             db.t_member_answer.insert(
                 f_question=question,
                 f_answer=[row.id for row in answers],
                 f_member=auth.user_id
             )
         else:
+            logger.debug('questionnaire.submit: update record')
             given_answer_record.update_record(f_answer=[row.id for row in answers])
         redirect(URL('questionnaires', args=(request.args[0], question_index + 1)))
     return dict(title=questionnaire.f_title,
