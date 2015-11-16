@@ -1,0 +1,181 @@
+*{
+margin: 0;
+padding: 0;
+}
+
+body {
+color:black;
+font: 13px Verdana,sans-serif;
+background:url(../images/back.gif);
+}
+
+#wrapper {
+width: 780px; 
+margin: 10px auto; 
+text-align: left;
+background: #FFF;
+}
+
+#header {
+position:relative;
+height: 215px;
+background:url(../images/logo_boven.png) no-repeat top left;
+}
+
+#navi, #navi_2{
+height: 35px;
+background:url(../images/navigation.png) no-repeat top left;
+}
+#col1{
+float:left;
+width:200px;
+}
+
+#inner{
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#inner h1{
+background:#0a0a64;
+padding:2px;
+color:white;
+font-size:18px;
+}
+
+#cat_or{
+    position: relative;
+    left: 90px;
+}
+
+#cat_SWL{
+    width: 100px;
+}
+
+#cat_all{
+    padding: 15px;
+    border-left: thick solid #000000;
+}
+
+#col2{
+margin-left:210px;
+width:550px;
+}
+
+#footer { 
+clear: both;
+height:216px;
+background:url(../images/logo_onder.png) no-repeat top left;
+} 
+.clearer{
+clear:both;
+}
+/* NAVIGATION */
+#navi ul {	
+list-style:none;
+height: 35px;
+}
+#navi ul li{
+display:inline;
+}
+
+#navi ul li a {
+display: block;
+float:left;
+padding: 0 12px;
+border-right: 3px solid #fff;
+color: #000;
+font: bold 15px sans-serif;
+line-height: 35px;
+text-decoration: none;
+}
+
+#navi ul li a:hover, #navi ul li .menuactive{
+color: #fff;
+}
+
+/* NAVIGATION_2 */
+
+#navi_2 ul {	
+list-style:none;
+height: 35px;
+}
+#navi_2 ul li{
+display:inline;
+}
+
+#navi_2 ul li a {
+display: block;
+float:left;
+padding: 0 20px;
+border-right: 3px solid #fff;
+color: #000;
+font: normal 15px sans-serif;
+line-height: 35px;
+text-decoration: none;
+}
+
+#navi_2 ul li a:hover, #navi_2 ul li .menuactive{
+color: #fff;
+}
+
+
+/* BOXES */
+
+.box {
+width:180px;
+margin:10px 10px;
+background: #FFC000;
+}
+
+.box h3 {
+margin:0;
+padding:6px 10px;
+background: #000080;
+color:white;
+}
+
+/* OTHER STYLES*/
+a{
+color:#0a0a64;
+}
+
+#header h1 {
+position:absolute;
+top:6px;
+left:20px;
+color:white;
+font-size:30px;
+}
+
+#col2 h1{
+background:#0a0a64;
+padding:2px;
+color:white;
+font-size:18px;
+}
+
+.inner{
+padding:20px;
+padding-top:10px;
+}
+
+address{
+padding-top:10px;
+color:#000;
+font-style:normal;
+text-align:center;
+}
+address a{
+color:#000;
+}
+.NewsSummary{
+padding:6px;
+}
+
+.list1{
+display:none;
+}
+/* Stylesheet: blue_orange_template // blue_orange Modified On 2014-09-03 23:07:34 */

@@ -1,0 +1,11 @@
+--2015-05-05 14:02:02--  http://www.web2py.com/layouts/static/plugin_layouts/layouts/FunRide/images/img01.gif
+Resolving www.web2py.com (www.web2py.com)... 50.19.109.98
+Connecting to www.web2py.com (www.web2py.com)|50.19.109.98|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 8440 (8.2K) [image/gif]
+Saving to: ‘img01.gif’
+
+     0K ........                                              100% 36.9M=0s
+
+2015-05-05 14:02:03 (36.9 MB/s) - ‘img01.gif’ saved [8440/8440]
+
