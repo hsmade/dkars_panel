@@ -1,8 +1,37 @@
 {{extend 'dkars_layout.html'}}
-<h1>DKARS panel</h1>
-<p>Welkom, blabla</p>
+<H3>Welkom bij het DKARS Radioamateurpanel</h3>
+
+<p>De stichting DKARS wil graag de belangen behartigen van radiozendamateurs in Europees en Caribisch Nederland en daarom willen wij regelmatig naar de mening van onze achterban vragen!  DKARS wil dit op een moderne manier vormgeven en aan een ieder die daar voor openstaat met enige regelmaat een vraag (stuk) voorleggen.</p>
+
+<p>Uiteraard is de privacy van de personen die reageren volledig gewaarborgd; we gebruiken een methode waarbij de gebruiker niet herleidbaar gekoppeld kan worden aan zijn/haar emailadres.</p>
+
+<p>De manier van een ‘Radio-amateurpanel’ is naar de mening van de ‘ondemocratische’ Stichting DKARS toch een heel bijzondere en actuele methode om snel meningen te peilen (en dat peilen maakt al onderdeel van de hobby uit toch?).</p>
+
+<p>Door deze methodiek te volgen krijgen we een mooie directe weergave van de mening van alle amateurs die meedoen aan het panel en kunnen we deze mening meenemen in het overleg met belanghebbenden op verschillende niveaus.</p>
+
+<h3>‘Snelle tijden vragen ook snelle reacties’</h3>
+
+<p>DKARS denkt dat we op deze manier snel op een efficiënte en democratische manier de mening van de Nederlandse radioamateur kunnen verwoorden en we ook met elkaar op een snelle manier op allerlei actuele ontwikkelingen kunnen inspelen. De tijden veranderen en de stichting DKARS wil dan ook graag met haar tijd meegaan.</p>
+
+<p>De registratie begint met het aanmaken van het anonieme account waar een aantal algemene gegevens gevraagd worden. En nogmaals vanuit dit account kan niemand herleiden van wie dit account is.</p>
+
+<p>Nadat het account is aangemaakt kan de actuele vraag worden beantwoord.</p>
+
+<p>Alvast dank voor je deelname die wij zeer op prijs stellen!</p>
+<i>P.S.
+Wil je zelf een bepaalde vraag voorleggen aan de amateurgemeenschap, dat kan via panel@dkars.nl . Mits ‘zinnig’ natuurlijk nemen we je vraag graag mee in een peiling!</i>
+<hr>
 <ul>
     {{ for link in links: }}
     <li><a href="{{=link['link']}}">{{=link['name']}}</a></li>
     {{ pass }}
 </ul>
+{{ if list_questionnaires: }}
+<p>Graag horen wij uw mening over het onderstaande!</p>
+<ul>
+    {{ for questionnaire in list_questionnaires: }}
+    <li><a href="{{=questionnaire['link']}}">{{=questionnaire['name']}}</a></li>
+    {{ pass }}
+</ul>
+<p>U kunt meerdere keren dezelfde vraag of vragen beantwoorden, de laatst gegeven antwoorden worden geregistreerd!</p>
+{{ pass }}

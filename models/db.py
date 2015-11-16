@@ -17,7 +17,7 @@ myconf = AppConfig(reload=True)
 
 if not request.env.web2py_runtime_gae:
     ## if NOT running on Google App Engine use SQLite or other DB
-    db = DAL(myconf.take('db.uri'), pool_size=myconf.take('db.pool_size', cast=int), check_reserved=['all'])
+    db = DAL(myconf.take('db.uri'), pool_size=myconf.take('db.pool_size', cast=int), check_reserved=['all'], adapter_args=dict(foreign_keys=False))
 else:
     ## connect to Google BigTable (optional 'google:datastore://namespace')
     db = DAL('google:datastore+ndb')
@@ -27,6 +27,9 @@ else:
     ## from gluon.contrib.memdb import MEMDB
     ## from google.appengine.api.memcache import Client
     ## session.connect(request, response, db = MEMDB(Client()))
+
+# test sessions in DB
+session.connect(request, response, db)
 
 ## by default give a view/generic.extension to all actions from localhost
 ## none otherwise. a pattern can be 'controller/function.extension'
@@ -104,17 +107,18 @@ db.define_table('t_questionnaire',
                 Field('f_description', 'text', label=T('Description'), required=True),
                 Field('f_start', 'date', label=T('Start date'), required=True),
                 Field('f_end', 'date', label=T('End date'), required=True),
+                format='%(f_title)s'
                 )
 
 db.define_table('t_question',
-                Field('f_questionnaire', 'reference t_questionnaire', label=T('Questionnaire'), required=True),
+                Field('f_questionnaire', 'reference t_questionnaire', label=T('Questionnaire')),
                 Field('f_question', 'text', label=T('Question'), required=True),
-                # Field('f_answers', 'list:string', label=T('List of answers'), required=False),
                 Field('f_multiple', 'boolean', label=T('Allow multiple answers')),
+                # format='%(f_question)s'
                 )
 
 db.define_table('t_answer',
-                Field('f_question', 'reference t_question', label=T('Question'), required=True),
+                Field('f_question', 'reference t_question', label=T('Question')),
                 Field('f_answer', 'text', label=T('Answer'), required=True),
                 format='%(f_answer)s'
                 )

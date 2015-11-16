@@ -22,14 +22,19 @@ def index():
     When the user is logged in, give the user a list of open questionnaires.
     When the user is an admin, present the administrate and results links
     """
-    links = [
-        {
-            'name': 'Aanmelden voor de mailinglijst voor nieuwe onderzoeken',
-            'link': URL('mailinglist')
-        }
-    ]
+    links = []
+    list_questionnaires = []
+    
     if not auth.is_logged_in():
         links.extend([
+            {
+                'name': 'Registratie e-mail adres zodat wij u kunnen waarschuwen wanneer er een nieuwe vraag voor het panel is (éénmalig)',
+                'link': URL('mailinglist')
+            },
+            {
+                'name': 'Afmelden emailadres (u krijgt dan geen ‘panel meldingen’ meer van ons).',
+                'link': URL('mailinglist_remove')
+            },
             {
                 'name': T('Inloggen'),
                 'link': URL('user/login')
@@ -40,8 +45,10 @@ def index():
             }
         ])
     else:
-        for questionnaire in db(db.t_questionnaire).select():
-            links.append({
+        query = (db.t_questionnaire.f_start <= datetime.now()) & (db.t_questionnaire.f_end >= datetime.now())
+        for questionnaire in db(query).select():
+            logger.debug('selected: {id} {start} {end}'.format(id=questionnaire.id, start=questionnaire.f_start, end=questionnaire.f_end))
+            list_questionnaires.append({
                 'name': questionnaire.f_title,
                 'link': URL('questionnaires', args=(questionnaire.id))
             })
@@ -57,7 +64,7 @@ def index():
             }
         ])
 
-    return dict(links=links)
+    return dict(links=links, list_questionnaires=list_questionnaires)
 
 
 def user():
@@ -95,19 +102,33 @@ def mailinglist():
     return dict(form=form, title=title)
 
 
+def mailinglist_remove():
+    """
+    Allows to remove an address from the list
+    """
+    title = 'Afmelden voor de mailinglijst'
+    form = FORM('e-mailaddress:', INPUT(_name='email', requires=IS_EMAIL()), INPUT(_type='submit'))
+    if form.accepts(request, session):
+        result = db(db.t_mailinglist.f_email == form.vars['email']).delete()
+        if result:
+            response.flash = 'e-Mail address vewijderd'
+    return dict(form=form, title=title) 
+
 @auth.requires_membership('admin')
 def administrate():
     """
     Administrate the questionnaires
     """
-    return dict(form=SQLFORM.smartgrid(db.t_questionnaire))
+    logger.debug('admin: \n{}\n{}'.format(request.args, response.vars))
+    form = SQLFORM.smartgrid(db.t_questionnaire)
+    #logger.debug('admin: form: {}'.format(form))
+    return dict(form=form)
 
 
 @auth.requires_login()
 def questionnaires():
     """
     Fill a questionnaire
-    # FIXME: what should this do when the user already filled this one in?
     """
     logger.debug('questionnaire.args: {}'.format(request.args))
     if len(request.args) < 1:
@@ -152,6 +173,7 @@ def questionnaires():
         given_answer_record = None
     logger.debug('questionnaire: given_answers: {}'.format(given_answers))
 
+    #FIXME map to ID, as value is broken
     answer_form = SQLFORM.factory(
         Field('Antwoord', 'list:string',
               requires=IS_EMPTY_OR(
@@ -162,6 +184,7 @@ def questionnaires():
               default=given_answers)
     )
 
+    logger.debug('questionnaire.form.answer: {}'.format(answer_form.vars.keys()))
     if answer_form.accepts(request, session):
         answer = answer_form.vars['Antwoord']
         if not isinstance(answer, list):
@@ -192,7 +215,9 @@ def results():
     Returns the results for a questionnaire
     """
     if len(request.args) < 1:
-        redirect(URL('results', args=(2,)))
+        field = db.t_questionnaire.id.min()
+        first = db(db.t_questionnaire).select(field)
+        redirect(URL('results', args=(first[0][field],)))
     # get the questionnaire
     questionnaire = db(db.t_questionnaire.id == request.args[0]).select()
     if not questionnaire:
